@@ -1,6 +1,8 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <list>
+#include <fstream>
 using namespace std;
 
 /*
@@ -30,24 +32,23 @@ class enrutador{
     string conexion;
     int valor;
 };
-int caminos_t(string ruta,vector<string>v){
-    int retorno=0;
-    for(int i = 0; i < v.size() ; i++){ //cuantos caminos hay
-        if(v.at(i)[0] == ruta[1] && v.at(i)[0] != ruta[0] ){
-           retorno+=1;
-        }
-    }
-    return retorno;
-}
+vector<string> lectura();
+
 int main(){
     //entra en una tabla , ASI:
     //   | A | B | C | D |
     // A | 0 | 4 | 10| - |
     //'A','B','C','D','E','F','G'
     //"A","B","C","D","E","F","G"
-    string a = "";
-    vector<string> vector_2; //definimos vector q gaurda todas las rutas
+    vector<string> vector_2= lectura(); //definimos vector q gaurda todas las rutas
     vector <string> v;
+    vector<string> lista2;
+    //ingreso por txt
+
+    //ingreso manual
+    /*
+    string a = "";
+
     cout <<"ingrese la conexion y su costo asi (AB,1)"<<endl<<"ingrese . para acabar"<<endl;
     for (int i  =0 ; i <  25 ; i++ ) {
         string a; cin >> a;
@@ -55,9 +56,10 @@ int main(){
             break;
         }
         else{
+
             vector_2.push_back(a);
         }
-    }
+    }*/
     string buscar; cout << "ingrese la ruta a buscar "<<endl; cin>>buscar;
     vector<string> r_; //contener las rutas de llegada
     for(int p = 0; p < vector_2.size() ; p++){
@@ -66,6 +68,78 @@ int main(){
         r_.push_back(vector_2[p]);
         }
     }
+ //--------------------------------------------------------------metodo 2-------------------------------------------------
+ //---------------------------------------------------------------------------------------------------------------------
+    //sacar todos los enrutadores que existen
+
+    for(int j = 0; j < vector_2.size(); j ++){
+        if(lista2.empty() == true){
+            char aux1 = vector_2.at(j)[0];
+            string aux2; aux2.push_back(aux1);
+            lista2.push_back(aux2);
+        }
+        else{
+            bool repetido = false;
+            char aux1 = vector_2.at(j)[0];
+            string aux2; aux2.push_back(aux1);
+            //buscamos si el elemento esta ya en lalista
+            for (int i = 0; i < lista2.size(); i++) {
+                string _letra = lista2[i];
+                if(_letra == aux2 ) {
+                repetido = true;
+                break;
+              }
+            }
+            if(!repetido){ //si no esta lo agregamos
+                lista2.push_back(aux2);
+            }
+        }
+    }
+    //empezamos a buscar los caminos
+    string enrutador = "A"; //ejemplo con el nrutador A
+    list<string> lista;
+    for(int i = 0; i  < lista2.size(); i++){
+        char aux0 = lista2.at(i)[0];
+        string aux; aux.push_back(aux0);
+        if(aux == enrutador){ //para ir de enrutador hacia el mismo
+            //lista2.insert(i,"0");
+        }
+        else{
+            for(int J = 0; J  < vector_2.size(); J++){
+                char aux1 = vector_2.at(J)[0];
+                string aux2; aux2.push_back(aux1);
+                //vamos a  las aristas de "enrutador"
+                if( aux2 == enrutador){
+                    char conexion = vector_2.at(J)[1];
+                    string conection; conection.push_back(conexion);
+                    //buscamos la posicion de conection
+                    int index;
+                    for(int i = 0; i  < lista2.size(); i++){
+                        string aux3 = lista2.at(i);
+                        if(aux3 == conection){
+                            index = i;
+                            break;
+                        }
+                    }
+                    //cogemos el valor
+                    string cadena = vector_2.at(J);
+                    int start = cadena.find(",")+1;
+                    int finish = cadena.length();
+                    string valor;
+                    while(start != finish){
+                        valor+= cadena[start];
+                        start++;
+                    }
+                    cout << conection <<"en la lista:" <<index<<" valor: " <<valor<<endl;
+                    //lo agregamos a la lista
+                }
+
+            }
+
+        }
+
+    }
+ /*
 //----------------------------------------------------------------metodo1----------------------------------------------------------------------------------
 //falla: solo pude recorrer una vez cada posible camino ( ejm B -> D : Rutas ( DAB , DEB) : rutas totales ( DAB,DACB,DEB)
 //--------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -113,7 +187,7 @@ int main(){
     }
 
 //-----------------------------------------------------------------------metodo 2---------------------------------------------------------------------------
-    /*
+
     //definimos la ruta
     vector<string> caminos;
     string ruta="";
@@ -145,4 +219,21 @@ int main(){
     //buscar por cada camino las rutas q hay
     */
     return 0;
+}
+vector<string> lectura(){
+    vector<string> vector_2;
+    ifstream data;
+    string texto;
+    data.open("../enrutadores/BD/conections.txt",ios::in); //modo lectura
+    if(data.fail()  == true){
+        cout <<"no se pudo abrir"<<endl;
+        exit(1);
+    }
+    while(!data.eof()){
+        getline(data,texto);
+        cout << texto <<endl;
+        vector_2.push_back(texto);
+    }
+    data.close(); // cerramos
+    return vector_2;
 }
