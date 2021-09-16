@@ -1,56 +1,152 @@
+/*
+#include <iostream>
+using namespace std;
+#include <limits.h>
+
+// Number of vertices in the graph
+#define V 9
+
+// A utility function to find the vertex with minimum distance value, from
+// the set of vertices not yet included in shortest path tree
+int minDistance(int dist[], bool sptSet[])
+{
+
+    // Initialize min value
+    int min = INT_MAX, min_index;
+
+    for (int v = 0; v < V; v++)
+        if (sptSet[v] == false && dist[v] <= min)
+            min = dist[v], min_index = v;
+
+    return min_index;
+}
+
+// A utility function to print the constructed distance array
+void printSolution(int dist[])
+{
+    cout <<"Vertex \t Distance from Source" << endl;
+    for (int i = 0; i < V; i++)
+        cout  << i << " \t\t"<<dist[i]<< endl;
+}
+
+// Function that implements Dijkstra's single source shortest path algorithm
+// for a graph represented using adjacency matrix representation
+void dijkstra(int graph[V][V], int src)
+{
+    int dist[V]; // The output array.  dist[i] will hold the shortest
+    // distance from src to i
+
+    bool sptSet[V]; // sptSet[i] will be true if vertex i is included in shortest
+    // path tree or shortest distance from src to i is finalized
+
+    // Initialize all distances as INFINITE and stpSet[] as false
+    for (int i = 0; i < V; i++)
+        dist[i] = INT_MAX, sptSet[i] = false;
+
+    // Distance of source vertex from itself is always 0
+    dist[src] = 0;
+
+    // Find shortest path for all vertices
+    for (int count = 0; count < V - 1; count++) {
+        // Pick the minimum distance vertex from the set of vertices not
+        // yet processed. u is always equal to src in the first iteration.
+        int u = minDistance(dist, sptSet);
+
+        // Mark the picked vertex as processed
+        sptSet[u] = true;
+
+        // Update dist value of the adjacent vertices of the picked vertex.
+        for (int v = 0; v < V; v++)
+
+            // Update dist[v] only if is not in sptSet, there is an edge from
+            // u to v, and total weight of path from src to  v through u is
+            // smaller than current value of dist[v]
+            if (!sptSet[v] && graph[u][v] && dist[u] != INT_MAX
+                && dist[u] + graph[u][v] < dist[v])
+                dist[v] = dist[u] + graph[u][v];
+    }
+
+    // print the constructed distance array
+    printSolution(dist);
+}
+
+// driver program to test above function
+int main()
+{
+
+    Let us create the example graph discussed above
+    int graph[V][V] = { { 0, 4, 0, 0, 0, 0, 0, 8, 0 },
+                        { 4, 0, 8, 0, 0, 0, 0, 11, 0 },
+                        { 0, 8, 0, 7, 0, 4, 0, 0, 2 },
+                        { 0, 0, 7, 0, 9, 14, 0, 0, 0 },
+                        { 0, 0, 0, 9, 0, 10, 0, 0, 0 },
+                        { 0, 0, 4, 14, 10, 0, 2, 0, 0 },
+                        { 0, 0, 0, 0, 0, 2, 0, 1, 6 },
+                        { 8, 11, 0, 0, 0, 0, 1, 0, 7 },
+                        { 0, 0, 2, 0, 0, 0, 6, 7, 0 } };
+
+    dijkstra(graph, 0);
+
+    return 0;
+}
+*/
 #include <iostream>
 #include <vector>
 #include <string>
 #include <list>
 #include <fstream>
+#include<map>
 using namespace std;
 
-/*
+
 class enrutador{
 private:
-    char lista_conexion [7]={'A','B','C','D','E','F','G'};
-    char lista_valores[7];
+    string V ;
+    map<string,int> mapa_conexiones;
 public:
-    enrutador(); // constructor vacio
-    void definir_conexiones();
-    void mostar_conexiones();
+    enrutador(string); // constructor vacio
+    void agg_el_coneccion(string);
+    void actualizar();
+
 };
-enrutador::enrutador(){
+class modelo{
+private:
+    vector<enrutador> modelamiento;
+public:
+    modelo();
+    vector<string> lectura();
+    vector<string> escritura();
+    void envio(string , string);
+    void agg_el_enrutador(string);
+};
+enrutador::enrutador(string _v){
+    V = _v;
+}
+modelo::modelo(){
 
 }
-void enrutador::definir_conexiones(){
-   cout << "ingrese los valores de las conexiones mostradas, si no hay ponga '-' "<<endl;
-   cout << "ingrese . para finalizar"<<endl;
-   string ingreso ;
-   for (int i = 0; i < 8 ; i++ ) {
-       cout << lista_conexion[i]<<endl;
-   }
-
+vector<string>modelo::lectura(){
+    vector<string> vector_2;
+    ifstream data;
+    string texto;
+    data.open("../enrutadores/BD/conections.txt",ios::in); //modo lectura
+    if(data.fail()  == true){
+        cout <<"no se pudo abrir"<<endl;
+        exit(1);
+    }
+    while(!data.eof()){
+        getline(data,texto);
+        cout << texto <<endl;
+        vector_2.push_back(texto);
+    }
+    data.close(); // cerramos
+    return vector_2;
 }
-*/
-class enrutador{
-    string conexion;
-    int valor;
-};
-vector<string> lectura();
-
-int main(){
-    //entra en una tabla , ASI:
-    //   | A | B | C | D |
-    // A | 0 | 4 | 10| - |
-    //'A','B','C','D','E','F','G'
-    //"A","B","C","D","E","F","G"
-    vector<string> vector_2= lectura(); //definimos vector q gaurda todas las rutas
-    vector <string> v;
-    vector<string> lista2;
-    //ingreso por txt
-
-    //ingreso manual
-    /*
+vector<string>modelo::escritura(){
+    vector<string> vector_2;
     string a = "";
-
     cout <<"ingrese la conexion y su costo asi (AB,1)"<<endl<<"ingrese . para acabar"<<endl;
-    for (int i  =0 ; i <  25 ; i++ ) {
+    for (int i  =0 ; i <  49; i++ ) {
         string a; cin >> a;
         if(a == "."){
             break;
@@ -59,7 +155,35 @@ int main(){
 
             vector_2.push_back(a);
         }
-    }*/
+    }
+    return vector_2;
+}
+int main(){
+    //entra en una tabla , ASI:
+    //   | A | B | C | D |
+    // A | 0 | 4 | 10| - |
+    //'A','B','C','D','E','F','G'
+    //"A","B","C","D","E","F","G"
+    string variable = "A";
+    modelo r1 = modelo();
+    vector<string> vector_2= r1.lectura(); //definimos vector q gaurda todas las rutas
+    vector <string> v;
+    vector<string> lista2;
+    //ingreso manual
+
+    string a = "";
+
+    cout <<"ingrese la conexion y su costo asi (AB,1)"<<endl<<"ingrese . para acabar"<<endl;
+    for (int i  =0 ; i <  49; i++ ) {
+        string a; cin >> a;
+        if(a == "."){
+            break;
+        }
+        else{
+
+            vector_2.push_back(a);
+        }
+    }
     string buscar; cout << "ingrese la ruta a buscar "<<endl; cin>>buscar;
     vector<string> r_; //contener las rutas de llegada
     for(int p = 0; p < vector_2.size() ; p++){
@@ -68,8 +192,6 @@ int main(){
         r_.push_back(vector_2[p]);
         }
     }
- //--------------------------------------------------------------metodo 2-------------------------------------------------
- //---------------------------------------------------------------------------------------------------------------------
     //sacar todos los enrutadores que existen
 
     for(int j = 0; j < vector_2.size(); j ++){
@@ -95,6 +217,16 @@ int main(){
             }
         }
     }
+    //-------------------------------------------------------------metod 3-----------------------------------------
+    //--------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+ //--------------------------------------------------------------metodo 2-------------------------------------------------
+ //---------------------------------------------------------------------------------------------------------------------
+
     //empezamos a buscar los caminos
     string enrutador = "A"; //ejemplo con el nrutador A
     list<string> lista;
@@ -134,12 +266,13 @@ int main(){
                     //lo agregamos a la lista
                 }
 
+
             }
 
         }
 
     }
- /*
+
 //----------------------------------------------------------------metodo1----------------------------------------------------------------------------------
 //falla: solo pude recorrer una vez cada posible camino ( ejm B -> D : Rutas ( DAB , DEB) : rutas totales ( DAB,DACB,DEB)
 //--------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -217,23 +350,8 @@ int main(){
         rutas-=1;
     }
     //buscar por cada camino las rutas q hay
-    */
+
     return 0;
 }
-vector<string> lectura(){
-    vector<string> vector_2;
-    ifstream data;
-    string texto;
-    data.open("../enrutadores/BD/conections.txt",ios::in); //modo lectura
-    if(data.fail()  == true){
-        cout <<"no se pudo abrir"<<endl;
-        exit(1);
-    }
-    while(!data.eof()){
-        getline(data,texto);
-        cout << texto <<endl;
-        vector_2.push_back(texto);
-    }
-    data.close(); // cerramos
-    return vector_2;
-}
+
+
