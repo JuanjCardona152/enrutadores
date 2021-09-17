@@ -1,95 +1,3 @@
-/*
-#include <iostream>
-using namespace std;
-#include <limits.h>
-
-// Number of vertices in the graph
-#define V 9
-
-// A utility function to find the vertex with minimum distance value, from
-// the set of vertices not yet included in shortest path tree
-int minDistance(int dist[], bool sptSet[])
-{
-
-    // Initialize min value
-    int min = INT_MAX, min_index;
-
-    for (int v = 0; v < V; v++)
-        if (sptSet[v] == false && dist[v] <= min)
-            min = dist[v], min_index = v;
-
-    return min_index;
-}
-
-// A utility function to print the constructed distance array
-void printSolution(int dist[])
-{
-    cout <<"Vertex \t Distance from Source" << endl;
-    for (int i = 0; i < V; i++)
-        cout  << i << " \t\t"<<dist[i]<< endl;
-}
-
-// Function that implements Dijkstra's single source shortest path algorithm
-// for a graph represented using adjacency matrix representation
-void dijkstra(int graph[V][V], int src)
-{
-    int dist[V]; // The output array.  dist[i] will hold the shortest
-    // distance from src to i
-
-    bool sptSet[V]; // sptSet[i] will be true if vertex i is included in shortest
-    // path tree or shortest distance from src to i is finalized
-
-    // Initialize all distances as INFINITE and stpSet[] as false
-    for (int i = 0; i < V; i++)
-        dist[i] = INT_MAX, sptSet[i] = false;
-
-    // Distance of source vertex from itself is always 0
-    dist[src] = 0;
-
-    // Find shortest path for all vertices
-    for (int count = 0; count < V - 1; count++) {
-        // Pick the minimum distance vertex from the set of vertices not
-        // yet processed. u is always equal to src in the first iteration.
-        int u = minDistance(dist, sptSet);
-
-        // Mark the picked vertex as processed
-        sptSet[u] = true;
-
-        // Update dist value of the adjacent vertices of the picked vertex.
-        for (int v = 0; v < V; v++)
-
-            // Update dist[v] only if is not in sptSet, there is an edge from
-            // u to v, and total weight of path from src to  v through u is
-            // smaller than current value of dist[v]
-            if (!sptSet[v] && graph[u][v] && dist[u] != INT_MAX
-                && dist[u] + graph[u][v] < dist[v])
-                dist[v] = dist[u] + graph[u][v];
-    }
-
-    // print the constructed distance array
-    printSolution(dist);
-}
-
-// driver program to test above function
-int main()
-{
-
-    Let us create the example graph discussed above
-    int graph[V][V] = { { 0, 4, 0, 0, 0, 0, 0, 8, 0 },
-                        { 4, 0, 8, 0, 0, 0, 0, 11, 0 },
-                        { 0, 8, 0, 7, 0, 4, 0, 0, 2 },
-                        { 0, 0, 7, 0, 9, 14, 0, 0, 0 },
-                        { 0, 0, 0, 9, 0, 10, 0, 0, 0 },
-                        { 0, 0, 4, 14, 10, 0, 2, 0, 0 },
-                        { 0, 0, 0, 0, 0, 2, 0, 1, 6 },
-                        { 8, 11, 0, 0, 0, 0, 1, 0, 7 },
-                        { 0, 0, 2, 0, 0, 0, 6, 7, 0 } };
-
-    dijkstra(graph, 0);
-
-    return 0;
-}
-*/
 #include <iostream>
 #include <vector>
 #include <string>
@@ -164,27 +72,116 @@ int main(){
     // A | 0 | 4 | 10| - |
     //'A','B','C','D','E','F','G'
     //"A","B","C","D","E","F","G"
-    string variable = "A";
     modelo r1 = modelo();
     vector<string> vector_2= r1.lectura(); //definimos vector q gaurda todas las rutas
     vector <string> v;
     vector<string> lista2;
-    //ingreso manual
 
-    string a = "";
+    //-------------------------------------------------------------------------------------------------------------
+    //string buscar; cout << "ingrese la ruta a buscar "<<endl; cin>>buscar;
+    //sacar todos los enrutadores que existen
+    map<string,int> mapeo; //almacenar rutas y valores
+    map<string,int> info; //contiene los enrutadores y las conexiones uqe hay desde estos
+    int numVertices = 0;
+    for(int j = 0; j < vector_2.size(); j ++){
+            bool repetido = false;
+            char aux1 = vector_2.at(j)[0];
+            string aux2; aux2.push_back(aux1);
+            //buscamos si el elemento esta ya en lalista
+            for (int i = 0; i < lista2.size(); i++) {
+                string _letra = lista2[i];
+                if(_letra == aux2 ) {
+                repetido = true;
 
-    cout <<"ingrese la conexion y su costo asi (AB,1)"<<endl<<"ingrese . para acabar"<<endl;
-    for (int i  =0 ; i <  49; i++ ) {
-        string a; cin >> a;
-        if(a == "."){
-            break;
-        }
-        else{
+                break;
+              }
+            }
 
-            vector_2.push_back(a);
-        }
+            if(!repetido){ //si no esta lo agregamos
+                lista2.push_back(aux2);
+                for(int k = 0 ; k < vector_2.size(); k++){
+                    char aux3 = vector_2.at(k)[0];
+                    string aux4; aux4.push_back(aux3);
+                    if(aux4 == aux2){
+                        numVertices+=1;
+                    }
+                }
+                info[aux2] = numVertices;
+                numVertices = 0;
+            }
     }
-    string buscar; cout << "ingrese la ruta a buscar "<<endl; cin>>buscar;
+    //---------------------------------------------------intento ( 2) del 17/09/21------------------------------------
+
+
+
+
+    //---------------------------------------------------intento (1) del 16/09/21-------------------------------------
+    /*
+    //empezamos a construir las rutas
+   string ruter = "A";  //como ejemplo con A
+   for (auto r : info) {
+       //si viene a el mismo , es 0
+       if( r.first == ruter){
+           mapeo[r.first] = 0 ;
+       }
+       else{ //es otro
+   vector<string> rutas_analizar;
+   vector <string > nodos_analizados;
+   nodos_analizados.push_back(ruter);
+   string ruta = ruter;
+   while( nodos_analizados.size() != info.size() ){
+       //desde donde estamos, buscamos los caminos que hay
+       int aux= ruta.length();
+       char aux3 = ruta[aux];
+       string aux4; aux4.push_back(aux3);
+       int aux5 = info[aux4]; //almacena los caminos del ultimo nodo en ruta
+       vector<string> caminos;
+       while(aux5 > 0){
+           //guardamos los caminos
+           for(int l = 0; l < vector_2.size(); l++){
+               char a = vector_2.at(l)[0];
+               string a1; a1.push_back(a);
+               if(a1 == aux4){
+                   caminos.push_back(vector_2.at(l));
+                   char a2 = vector_2.at(l)[1];
+                   string a3; a3.push_back(a2);
+                   nodos_analizados.push_back(a3);
+                   aux -= 1;
+               }
+           }
+       }
+       for(auto i : caminos){
+
+       }
+
+       char a = vector_2.at(l)[0];
+       string a1; a1.push_back(a); //primera posicion de la conexion
+       if(a1 == aux4){ // es un camino
+           char a2 = vector_2.at(l)[1];
+           string a3; a3.push_back(a2); //aca es el nodo donde llegamos
+           //verificamos que no lo haya recorrido ya
+           bool repetir = false;
+           for (auto nodo : nodos_analizados) {
+               if(nodo == a3){
+                   repetir = true;
+               }
+           }
+           if(!repetir){
+           //llegue
+           if(a3 == r.first){
+               string new_ruta = ruta;
+           }
+           //aun no haya llegado
+           else{
+
+           }
+           }
+
+   }
+   }
+   }}*/
+   //------------------------------------------------------------------------------------------------------------------
+    /*
     vector<string> r_; //contener las rutas de llegada
     for(int p = 0; p < vector_2.size() ; p++){
         if(vector_2.at(p)[1] == buscar[1] ){ //ruats de llegada
@@ -217,12 +214,6 @@ int main(){
             }
         }
     }
-    //-------------------------------------------------------------metod 3-----------------------------------------
-    //--------------------------------------------------------------------------------------------------------------
-
-
-
-
 
  //--------------------------------------------------------------metodo 2-------------------------------------------------
  //---------------------------------------------------------------------------------------------------------------------
@@ -276,6 +267,8 @@ int main(){
 //----------------------------------------------------------------metodo1----------------------------------------------------------------------------------
 //falla: solo pude recorrer una vez cada posible camino ( ejm B -> D : Rutas ( DAB , DEB) : rutas totales ( DAB,DACB,DEB)
 //--------------------------------------------------------------------------------------------------------------------------------------------------------
+        //almacenar las rutas - como caminos que ya paso para no repetir y asi ir sacando
+        //almacenar los posibles cmainos de cada una de los enrutadores
 
     //luego vamos a hacer un ciclo anidado para las rutas
     for(int p = 0; p < vector_2.size() ; p++){
@@ -350,7 +343,7 @@ int main(){
         rutas-=1;
     }
     //buscar por cada camino las rutas q hay
-
+*/
     return 0;
 }
 
